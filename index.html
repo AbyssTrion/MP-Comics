@@ -3,90 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strichmännchen Studio Pro</title>
+    <title>MP Studio Pro</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --secondary: #64748b;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text-light: #f8fafc;
+            --primary: #3b82f6;
+            --bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #6366f1;
             --danger: #ef4444;
+            --comic-border: 2px solid #000;
+            --hard-shadow: 6px 6px 0px #000;
+            --hard-shadow-small: 4px 4px 0px #000;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-light); margin: 0; padding: 20px; }
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 20px; 
+            line-height: 1.5;
+        }
+        
         .container { max-width: 1000px; margin: 0 auto; }
         
-        header { text-align: center; margin-bottom: 10px; }
-        header h1 { color: white; letter-spacing: 1px; }
+        /* Neuer Header-Bereich für Logo oben links */
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .stats { font-size: 0.85rem; color: #94a3b8; display: flex; gap: 15px; }
+        header h1 { 
+            font-size: 2rem; 
+            color: var(--text);
+            text-shadow: 2px 2px 0px #000, 4px 4px 0px var(--primary);
+            margin: 0;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        /* TOP BAR rechts neben/unter dem Logo */
+        .top-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            background: var(--card-bg); 
+            padding: 15px 20px; 
+            border: var(--comic-border); 
+            border-radius: 18px;
+            box-shadow: var(--hard-shadow);
+            flex-grow: 1; /* Nimmt den restlichen Platz ein */
+        }
+
+        .stats { font-weight: bold; display: flex; gap: 20px; font-size: 0.9rem; }
         .stats strong { color: var(--primary); }
 
-        .tab-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #334155; padding-bottom: 10px; }
-        .tab-btn { background: none; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; color: #94a3b8; border-radius: 8px; transition: 0.3s; }
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .tab-nav { display: flex; gap: 12px; margin-bottom: 25px; }
+        .tab-btn { 
+            background: #334155; 
+            border: var(--comic-border); 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: var(--text-muted);
+            border-radius: 12px;
+            transition: 0.1s;
+        }
+        .tab-btn:hover { transform: translate(-2px, -2px); box-shadow: var(--hard-shadow-small); color: white; }
+        .tab-btn.active { 
+            background: var(--primary); 
+            color: white; 
+            transform: translate(-2px, -2px);
+            box-shadow: var(--hard-shadow-small);
+        }
 
-        .action-bar { display: grid; grid-template-columns: 1fr auto; gap: 15px; margin-bottom: 30px; align-items: center; }
-        input[type="text"] { padding: 14px; background: var(--card-bg); border: 2px solid #334155; border-radius: 12px; outline: none; width: 100%; box-sizing: border-box; font-size: 1rem; color: white; transition: 0.3s; }
-        input[type="text"]:focus { border-color: var(--primary); }
+        .action-bar { display: grid; grid-template-columns: 1fr auto auto; gap: 15px; margin-bottom: 30px; }
+        input[type="text"], select { 
+            padding: 12px 16px; 
+            background: var(--card-bg);
+            border: var(--comic-border); 
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            box-shadow: var(--hard-shadow-small);
+        }
+        
+        .btn { 
+            background: var(--primary); 
+            color: white; 
+            border: var(--comic-border); 
+            padding: 0 20px; 
+            font-weight: bold; 
+            cursor: pointer;
+            border-radius: 12px;
+            transition: 0.1s;
+            height: 48px;
+            box-shadow: var(--hard-shadow-small);
+        }
+        .btn:hover { background: var(--accent); transform: translate(-1px, -1px); box-shadow: 6px 6px 0px #000; }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #000; }
+        .btn-sec { background: #334155; font-size: 0.75rem; height: auto; padding: 6px 12px; box-shadow: 3px 3px 0px #000; }
 
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; height: 50px; }
-        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .btn-sec { background: #334155; padding: 8px 15px; height: auto; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); }
+        .main-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .card { 
+            background: var(--card-bg); 
+            border: var(--comic-border); 
+            padding: 25px; 
+            text-align: center; 
+            border-radius: 22px;
+            transition: 0.2s; 
+            box-shadow: var(--hard-shadow);
+            position: relative;
+        }
+        .card:hover { 
+            transform: translate(-4px, -4px); 
+            box-shadow: 10px 10px 0px #000;
+            border-color: var(--primary);
+        }
+        
+        .card img.profile-img { 
+            width: 100px; height: 100px; 
+            border: var(--comic-border); 
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            background: var(--bg);
+        }
+        
+        .card h3 { margin: 0; font-size: 1.2rem; color: white; }
+        
+        .star-avatars { display: flex; justify-content: center; margin-top: 15px; }
+        .mini-avatar { 
+            width: 32px; height: 32px; 
+            border: 2px solid #000; 
+            border-radius: 50%;
+            margin-left: -10px;
+            background: var(--card-bg);
+            box-shadow: 2px 2px 0px #000;
+        }
 
-        .main-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 18px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; animation: zoomIn 0.3s; }
-        .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #334155; margin-bottom: 12px; }
-        .card h3 { margin: 10px 0 5px 0; color: white; }
-        .card small { color: #94a3b8; }
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); 
+            justify-content: center; align-items: center; z-index: 1000; 
+            cursor: pointer;
+        }
+        .modal-content { 
+            background: var(--card-bg); 
+            border: var(--comic-border); 
+            box-shadow: 10px 10px 0px #000;
+            padding: 30px; border-radius: 25px; 
+            width: 90%; max-width: 450px; position: relative;
+            cursor: default; color: white;
+        }
+        .close-x { position: absolute; top: 12px; right: 18px; font-size: 24px; cursor: pointer; color: var(--text-muted); }
 
-        .star-avatars { display: flex; gap: 4px; margin-top: 15px; justify-content: center; flex-wrap: wrap; }
-        .mini-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--card-bg); cursor: help; object-fit: cover; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; color: #1e293b; padding: 35px; border-radius: 28px; width: 95%; max-width: 500px; position: relative; animation: slideUp 0.3s ease-out; }
-        .close-x { position: absolute; top: 20px; right: 25px; font-size: 32px; cursor: pointer; border: none; background: none; color: #64748b; }
-
-        .comic-list { list-style: none; padding: 0; margin: 20px 0; max-height: 250px; overflow-y: auto; }
-        .comic-item { background: #f1f5f9; padding: 15px; margin-bottom: 10px; border-radius: 14px; border: 1px solid #e2e8f0; }
-        .comic-item-top { display: flex; justify-content: space-between; align-items: center; font-weight: bold; margin-bottom: 5px; }
-
-        .cast-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 20px; }
-        .cast-member { text-align: center; font-size: 0.75rem; }
-        .cast-member img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 5px; object-fit: cover;}
-
-        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .desc-display { 
+            background: var(--bg); border: 2px solid #000; padding: 12px; 
+            margin: 10px 0; border-radius: 15px; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;
+        }
+        
+        .comic-item { 
+            background: var(--bg); border: 1.5px solid #000; border-radius: 12px; 
+            padding: 12px; margin-bottom: 8px; font-size: 0.85rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><h1>🎭 MP-Comics</h1></header>
+    <div class="header-area">
+        <header><h1>MP Studio</h1></header>
 
-    <div class="top-bar">
-        <div class="stats">
-            <span>👥 Helden: <strong id="statH">0</strong></span>
-            <span>📚 Comics: <strong id="statC">0</strong></span>
-        </div>
-        <div class="backup-btns">
-            <button class="btn btn-sec" onclick="exportData()">💾 Export</button>
-            <button class="btn btn-sec" onclick="document.getElementById('importFile').click()">📂 Import</button>
-            <input type="file" id="importFile" hidden accept=".json" onchange="importData(event)">
+        <div class="top-bar">
+            <div class="stats">
+                <span>Heros: <strong id="statH">0</strong></span>
+                <span>Storys: <strong id="statC">0</strong></span>
+            </div>
+            <div class="backup-btns">
+                <button class="btn btn-sec" onclick="exportData()">Export</button>
+                <button class="btn btn-sec" onclick="document.getElementById('importFile').click()">Import</button>
+                <input type="file" id="importFile" hidden accept=".json" onchange="importData(event)">
+            </div>
         </div>
     </div>
 
     <div class="tab-nav">
-        <button id="tab-heroes" class="tab-btn active" onclick="switchTab('heroes')">Helden-Übersicht</button>
-        <button id="tab-comics" class="tab-btn" onclick="switchTab('comics')">Comic-Übersicht</button>
+        <button id="tab-heroes" class="tab-btn active" onclick="switchTab('heroes')">Heros</button>
+        <button id="tab-comics" class="tab-btn" onclick="switchTab('comics')">Storys</button>
     </div>
 
     <div class="action-bar">
         <input type="text" id="globalSearch" placeholder="Suchen..." onkeyup="renderContent()">
-        <button class="btn" id="addBtn" onclick="openAddHeroModal()">+ Neuer Held</button>
+        <select id="sortSelect" onchange="renderContent()">
+            <option value="az">A - Z</option>
+            <option value="most">Populär</option>
+            <option value="newest">Zuletzt</option>
+        </select>
+        <button class="btn" id="addBtn" onclick="openAddHeroModal()">+ Hero</button>
     </div>
 
     <div id="mainGrid" class="main-grid"></div>
@@ -94,80 +215,106 @@
 
 <div id="heroModal" class="modal">
     <div class="modal-content">
-        <button class="close-x" onclick="closeModal()">&times;</button>
+        <span class="close-x" onclick="closeModal()">✕</span>
         <div style="text-align: center;">
             <label title="Bild ändern">
-                <img id="mHeroImg" style="width:120px; height:120px; border-radius:50%; cursor:pointer; object-fit: cover; border: 4px solid var(--primary);">
+                <img id="mHeroImg" style="width:110px; height:110px; border:2px solid black; cursor:pointer; object-fit: cover; border-radius: 50%;">
                 <input type="file" hidden accept="image/*" onchange="updateHeroImage(this)">
             </label>
-            <h2 id="mHeroName" style="margin: 10px 0 5px 0;"></h2>
+            <h2 id="mHeroName" style="margin: 10px 0;"></h2>
         </div>
-        <ul id="mHeroComics" class="comic-list"></ul>
+
+        <div class="desc-container">
+            <label style="font-weight: bold; font-size: 0.75rem; color: var(--text-muted);">Akte & Notizen</label>
+            <div id="mHeroDescDisplay" class="desc-display" onclick="enableDescEdit()"></div>
+            <textarea id="mHeroDescEdit" onblur="disableDescEdit()" style="display:none; width:100%; background: var(--bg); color: white; border:2px solid black; border-radius: 12px; padding:10px; font-family: inherit;"></textarea>
+        </div>
+
+        <label style="font-weight: bold; font-size: 0.75rem; color: var(--text-muted); display:block; margin-top:15px;">Erscheint in</label>
+        <div id="mHeroComics" style="max-height: 140px; overflow-y: auto; margin: 10px 0;"></div>
+        
         <div style="display:flex; gap:10px;">
-            <input type="text" id="newComicInput" placeholder="Comic hinzufügen..." list="comicDatalist" style="color:#1e293b; background: white; border: 1px solid #ddd;">
-            <button class="btn" onclick="addComicToHero()" style="height:48px;">+</button>
+            <input type="text" id="newComicInput" placeholder="Neue Story..." list="comicDatalist" style="flex:1;">
+            <button class="btn" onclick="addComicToHero()">+</button>
         </div>
-        <button class="btn" style="background:var(--danger); width:100%; margin-top:25px;" onclick="deleteHero()">🗑️ Held löschen</button>
+        
+        <button class="btn" style="background:var(--danger); width:100%; margin-top:20px;" onclick="deleteHero()">Aus Archiv löschen</button>
     </div>
 </div>
 
 <div id="comicModal" class="modal">
     <div class="modal-content">
-        <button class="close-x" onclick="closeModal()">&times;</button>
-        <h3 style="color:#64748b; font-size: 0.8rem; text-transform: uppercase;">Comic bearbeiten</h3>
-        <input type="text" id="editComicName" style="color:#1e293b; background: #f1f5f9; border: 2px solid #ddd; margin-bottom: 20px;">
-        <button class="btn" style="width: 100%; margin-bottom: 25px;" onclick="renameComicGlobal()">Comic-Namen aktualisieren</button>
+        <span class="close-x" onclick="closeModal()">✕</span>
+        <h3 style="margin-bottom: 8px;">Story bearbeiten</h3>
+        <input type="text" id="editComicName" style="width:100%; box-sizing: border-box; margin-bottom: 12px;">
+        <button class="btn" style="width: 100%; margin-bottom: 25px;" onclick="renameComicGlobal()">Titel aktualisieren</button>
         
-        <h3 style="font-size: 0.9rem; color: #64748b; text-transform: uppercase;">Beteiligte Helden:</h3>
-        <div id="comicCastList" class="cast-list"></div>
+        <label style="font-weight: bold; font-size: 0.75rem; color: var(--text-muted);">Beteiligte Heros</label>
+        <div id="comicCastList" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px;"></div>
     </div>
 </div>
 
 <div id="addModal" class="modal">
     <div class="modal-content">
-        <button class="close-x" onclick="closeModal()">&times;</button>
-        <h2 style="margin-top:0;">Neuer Held</h2>
-        <input type="text" id="newName" placeholder="Name des Helden" style="margin-bottom:15px; color:#1e293b; background: white; border: 1px solid #ddd;">
-        <input type="file" id="newImg" accept="image/*" style="margin-bottom:25px; width:100%;">
-        <button class="btn" style="width:100%" onclick="saveNewHero()">Speichern</button>
+        <span class="close-x" onclick="closeModal()">✕</span>
+        <h2>Neuer Hero</h2>
+        <input type="text" id="newName" placeholder="Name..." style="width:100%; box-sizing: border-box; margin-bottom: 15px;">
+        <label style="font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; display: block; color: var(--text-muted);">Profilbild:</label>
+        <input type="file" id="newImg" accept="image/*" style="margin-bottom:20px; width: 100%;">
+        <button class="btn" style="width:100%" onclick="saveNewHero()">Eintragen</button>
     </div>
 </div>
 
 <datalist id="comicDatalist"></datalist>
 
 <script>
-    // Platzhalter ohne schwarze Fläche (transparent)
-    const PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjM1IiByPSIxNSIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNNTAgNTAgdjI1IE0zMCA2MCBoNDAgTTMwIDkwIGwyMCAtMTUgbDIwIDE1IiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=";
+    const PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjM1IiByPSIxNSIgZmlsbD0iIzQ3NTVmZSIvPjxwYXRoIGQ9Ik01MCA1MHYyNU0zMCA2MGg0ME0zMCA5MGwyMC0xNWwyMCAxNSIgc3Ryb2tlPSIjNDc1NWZlIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz48L3N2Zz4=";
     
     let heroes = JSON.parse(localStorage.getItem('heroes')) || [];
     let activeTab = 'heroes';
     let currentHeroIdx = null;
     let currentComicName = "";
 
+    function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+    window.onclick = (e) => { if (e.target.classList.contains('modal')) closeModal(); }
+
     function switchTab(tab) {
         activeTab = tab;
         document.getElementById('tab-heroes').classList.toggle('active', tab === 'heroes');
         document.getElementById('tab-comics').classList.toggle('active', tab === 'comics');
-        document.getElementById('addBtn').style.visibility = (tab === 'heroes') ? 'visible' : 'hidden';
+        document.getElementById('addBtn').style.display = (tab === 'heroes') ? 'block' : 'none';
+        document.getElementById('sortSelect').style.display = (tab === 'heroes') ? 'block' : 'none';
         renderContent();
     }
 
     function renderContent() {
         const grid = document.getElementById('mainGrid');
         const term = document.getElementById('globalSearch').value.toLowerCase();
+        const sortBy = document.getElementById('sortSelect').value;
         grid.innerHTML = '';
         
+        let displayHeroes = [...heroes];
+        if (sortBy === 'az') displayHeroes.sort((a, b) => a.name.localeCompare(b.name));
+        else if (sortBy === 'most') displayHeroes.sort((a, b) => b.comics.length - a.comics.length);
+        else if (sortBy === 'newest') displayHeroes.reverse();
+
         const allComics = [...new Set(heroes.flatMap(h => h.comics))].sort();
         document.getElementById('statH').innerText = heroes.length;
         document.getElementById('statC').innerText = allComics.length;
 
         if (activeTab === 'heroes') {
-            heroes.forEach((h, idx) => {
+            displayHeroes.forEach((h) => {
                 if (h.name.toLowerCase().includes(term)) {
+                    const originalIdx = heroes.indexOf(h);
                     const card = document.createElement('div');
                     card.className = 'card';
-                    card.onclick = () => openHeroDetails(idx);
-                    card.innerHTML = `<img src="${h.image || PLACEHOLDER}"><h3>${h.name}</h3><small>${h.comics.length} Auftritte</small>`;
+                    card.onclick = () => openHeroDetails(originalIdx);
+                    card.innerHTML = `
+                        <img class="profile-img" src="${h.image || PLACEHOLDER}">
+                        <h3>${h.name}</h3>
+                        <div style="font-size:0.8rem; margin-top:8px; font-weight: bold; color:var(--text-muted);">
+                            ${h.comics.length} Storys
+                        </div>`;
                     grid.appendChild(card);
                 }
             });
@@ -178,8 +325,8 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openComicDetails(comic);
-                    card.innerHTML = `<h3>${comic}</h3><small>${casting.length} Helden</small>
-                                     <div class="star-avatars">${casting.map(c => `<img src="${c.image || PLACEHOLDER}" class="mini-avatar">`).join('')}</div>`;
+                    card.innerHTML = `<h3 style="margin-bottom:12px; font-size: 1.1rem;">${comic}</h3>
+                                     <div class="star-avatars">${casting.map(c => `<img src="${c.image || PLACEHOLDER}" class="mini-avatar" title="${c.name}">`).join('')}</div>`;
                     grid.appendChild(card);
                 }
             });
@@ -192,19 +339,37 @@
         const h = heroes[idx];
         document.getElementById('mHeroName').innerText = h.name;
         document.getElementById('mHeroImg').src = h.image || PLACEHOLDER;
+        const descDisp = document.getElementById('mHeroDescDisplay');
+        descDisp.innerText = h.description || "Keine Einträge...";
         updateHeroComicList();
         document.getElementById('heroModal').style.display = 'flex';
+    }
+
+    function enableDescEdit() {
+        const display = document.getElementById('mHeroDescDisplay');
+        const edit = document.getElementById('mHeroDescEdit');
+        edit.value = heroes[currentHeroIdx].description || "";
+        display.style.display = 'none'; edit.style.display = 'block'; edit.focus();
+    }
+
+    function disableDescEdit() {
+        const display = document.getElementById('mHeroDescDisplay');
+        const edit = document.getElementById('mHeroDescEdit');
+        heroes[currentHeroIdx].description = edit.value.trim();
+        display.innerText = edit.value.trim() || "Keine Einträge...";
+        edit.style.display = 'none'; display.style.display = 'block';
+        save();
     }
 
     function openComicDetails(name) {
         currentComicName = name;
         document.getElementById('editComicName').value = name;
         const casting = heroes.filter(h => h.comics.includes(name));
-        const castList = document.getElementById('comicCastList');
-        castList.innerHTML = casting.map(h => `
-            <div class="cast-member">
-                <img src="${h.image || PLACEHOLDER}">
-                <div>${h.name}</div>
+        const list = document.getElementById('comicCastList');
+        list.innerHTML = casting.map(h => `
+            <div style="text-align:center;">
+                <img src="${h.image || PLACEHOLDER}" style="width:50px; height:50px; border:2px solid black; border-radius:50%; object-fit:cover; box-shadow: 2px 2px 0px #000;">
+                <div style="font-size:0.6rem; margin-top:4px;">${h.name}</div>
             </div>
         `).join('');
         document.getElementById('comicModal').style.display = 'flex';
@@ -212,22 +377,20 @@
 
     function renameComicGlobal() {
         const newName = document.getElementById('editComicName').value.trim();
-        if (!newName || newName === currentComicName) return;
-        
-        heroes.forEach(h => {
-            h.comics = h.comics.map(c => c === currentComicName ? newName : c);
-        });
-        
-        save();
-        closeModal();
+        if (newName && newName !== currentComicName) {
+            heroes.forEach(h => h.comics = h.comics.map(c => c === currentComicName ? newName : c));
+            save(); closeModal();
+        }
     }
 
     function updateHeroComicList() {
         const list = document.getElementById('mHeroComics');
-        list.innerHTML = heroes[currentHeroIdx].comics.map((comic, i) => {
-            const coStars = heroes.filter((h, idx) => idx !== currentHeroIdx && h.comics.includes(comic));
-            return `<li class="comic-item"><div class="comic-item-top"><span>${comic}</span><button onclick="removeComicFromHero(${i})" style="border:none;background:none;color:red;cursor:pointer;font-size:1.2rem;">&times;</button></div><div class="star-avatars">${coStars.map(s => `<img src="${s.image || PLACEHOLDER}" class="mini-avatar" title="${s.name}">`).join('')}</div></li>`;
-        }).join('');
+        list.innerHTML = (heroes[currentHeroIdx].comics || []).map((c, i) => `
+            <div class="comic-item">
+                <span>${c}</span>
+                <span onclick="removeComicFromHero(${i})" style="color:var(--danger); cursor:pointer; font-weight:bold;">✕</span>
+            </div>
+        `).join('');
     }
 
     function addComicToHero() {
@@ -248,7 +411,7 @@
         const name = document.getElementById('newName').value;
         const file = document.getElementById('newImg').files[0];
         if (!name) return;
-        const add = (img) => { heroes.push({name, image: img, comics: []}); save(); closeModal(); };
+        const add = (img) => { heroes.push({name, image: img, comics: [], description: ""}); save(); closeModal(); };
         if (file) { const r = new FileReader(); r.onload = e => add(e.target.result); r.readAsDataURL(file); } else add(null);
     }
 
@@ -260,15 +423,13 @@
         }
     }
 
-    function deleteHero() { if(confirm("Löschen?")) { heroes.splice(currentHeroIdx, 1); save(); closeModal(); } }
+    function deleteHero() { if(confirm("Hero löschen?")) { heroes.splice(currentHeroIdx, 1); save(); closeModal(); } }
     function save() { localStorage.setItem('heroes', JSON.stringify(heroes)); renderContent(); }
-    function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
     function openAddHeroModal() { document.getElementById('newName').value = ""; document.getElementById('addModal').style.display = 'flex'; }
-    function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(heroes)); a.download = "helden_daten.json"; a.click(); }
-    function importData(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { heroes = JSON.parse(ev.target.result); save(); }; r.readAsText(f); }
+    function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(heroes)); a.download = "studio_archiv.json"; a.click(); }
+    function importData(e) { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => { heroes = JSON.parse(ev.target.result); save(); }; r.readAsText(f); } }
 
     renderContent();
 </script>
 </body>
-
 </html>
