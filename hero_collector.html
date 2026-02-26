@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Hero Collector Pro</title>
+
+<style>
+:root {
+  --primary: #ff4ecb;
+  --secondary: #7a5cff;
+  --bg-dark: #0f0f1b;
+  --card-bg: #1e1e2f;
+  --ssr-color: gold;
+  --sr-color: #bf40bf;
+  --r-color: #3498db;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1b 100%);
+  color: white;
+  text-align: center;
+  min-height: 100vh;
+}
+
+/* UI Elements */
+.navbar {
+  background: rgba(0, 0, 0, 0.85);
+  padding: 15px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--primary);
+}
+
+.stats-bar {
+  background: #222;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  color: #00ffcc;
+}
+
+.screen {
+  display: none;
+  padding: 40px 20px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+button {
+  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  border: none;
+  padding: 12px 28px;
+  margin: 8px;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+button:hover { transform: translateY(-2px); filter: brightness(1.2); }
+button:disabled { background: #444; cursor: not-allowed; transform: none; opacity: 0.6; }
+
+.btn-secondary { background: #444; }
+
+/* Card Grid */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 35px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+/* Card Core */
+.card {
+  width: 160px;
+  height: 230px;
+  perspective: 1000px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+}
+
+/* State Classes */
+.card.flipped .card-inner { transform: rotateY(180deg); }
+.card.clickable { cursor: pointer; }
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgba(255,255,255,0.1);
+  box-sizing: border-box;
+}
+
+.card-front {
+  background: linear-gradient(135deg, #2c2c3e 0%, #1a1a2e 100%);
+  background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
+}
+
+.card-front::after { content: "？"; font-size: 50px; color: rgba(255,255,255,0.1); }
+
+.card-back {
+  background: var(--card-bg);
+  transform: rotateY(180deg);
+  padding: 15px;
+}
+
+.avatar-circle {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  border: 3px solid white;
+}
+
+/* Rarity & Hover Glows */
+.card.SSR:hover .card-inner { box-shadow: 0 0 25px 5px var(--ssr-color); }
+.card.SR:hover .card-inner { box-shadow: 0 0 20px 3px var(--sr-color); }
+.card.R:hover .card-inner { box-shadow: 0 0 15px 1px var(--r-color); }
+
+.SSR .card-back { border: 2px solid var(--ssr-color); }
+.SSR .avatar-circle { background: var(--ssr-color); box-shadow: 0 0 15px gold; }
+.SSR .rarity-label { color: gold; font-weight: bold; }
+
+.SR .card-back { border: 2px solid var(--sr-color); }
+.SR .avatar-circle { background: var(--sr-color); }
+
+.R .card-back { border: 2px solid var(--r-color); }
+.R .avatar-circle { background: var(--r-color); }
+
+@keyframes ultimateGlow {
+  0% { box-shadow: 0 0 15px gold; }
+  50% { box-shadow: 0 0 35px #fff700; }
+  100% { box-shadow: 0 0 15px gold; }
+}
+.card.SSR.flipped .card-inner { animation: ultimateGlow 2s infinite; }
+</style>
+</head>
+<body>
+
+<div class="navbar" id="main-nav" style="display:none;">
+  <div class="stats-bar">💎 Gems: <span id="gem-count">1000</span></div>
+  <div>
+    <button onclick="showScreen('home')">Home</button>
+    <button onclick="showScreen('gacha')">Summon</button>
+    <button onclick="showScreen('collection')">Heroes</button>
+  </div>
+  <button onclick="resetGame()" style="background: #444; font-size: 10px; opacity: 0.5;">Reset</button>
+</div>
+
+<div id="menu" class="screen" style="display: block;">
+  <h1 style="font-size: 3.5rem; text-shadow: 0 0 30px var(--primary);">🌸 HERO COLLECTOR 🌸</h1>
+  <button onclick="startGame()" style="font-size: 1.5rem; padding: 18px 50px; margin-top: 30px;">Spiel Starten</button>
+</div>
+
+<div id="home" class="screen">
+  <h2>Willkommen, Commander!</h2>
+  <div style="max-width: 500px; margin: 40px auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px;">
+    <p>Helden in deinem Besitz: <span id="hero-stat-count">0</span></p>
+    <p>Pity-Status: <span id="pity-stat">0</span>/50</p>
+  </div>
+</div>
+
+<div id="gacha" class="screen">
+  <h2>✨ Gacha Portal ✨</h2>
+  <div style="margin: 20px 0;">
+    <button onclick="pull(1)" id="btn-pull1">Summon x1 (100 💎)</button>
+    <button onclick="pull(10)" id="btn-pull10">Summon x10 (900 💎)</button>
+    <button onclick="revealAll()" id="btn-reveal" class="btn-secondary" style="display:none;">Alle aufdecken</button>
+  </div>
+  <div id="results" class="card-container"></div>
+</div>
+
+<div id="collection" class="screen">
+  <h2>📦 Deine Helden-Galerie</h2>
+  <div id="heroList" class="card-container"></div>
+</div>
+
+<script>
+const HERO_POOL = [
+  { name: "Hikari", rarity: "SSR", basePower: 50 },
+  { name: "Akari", rarity: "SSR", basePower: 45 },
+  { name: "Ren", rarity: "SR", basePower: 30 },
+  { name: "Yuna", rarity: "SR", basePower: 28 },
+  { name: "Kaito", rarity: "R", basePower: 15 },
+  { name: "Mika", rarity: "R", basePower: 12 }
+];
+
+const RANKS = ["D", "C", "B", "A", "S", "SS", "SSS"];
+let state = { gems: 1000, inventory: {}, pity: 0 };
+
+function loadGame() {
+  const saved = localStorage.getItem("hero_collector_v3");
+  if (saved) state = JSON.parse(saved);
+  updateUI();
+}
+
+function saveGame() { localStorage.setItem("hero_collector_v3", JSON.stringify(state)); }
+
+function updateUI() {
+  document.getElementById("gem-count").innerText = state.gems;
+  document.getElementById("hero-stat-count").innerText = Object.keys(state.inventory).length;
+  document.getElementById("pity-stat").innerText = state.pity;
+  
+  document.getElementById("btn-pull1").disabled = state.gems < 100;
+  document.getElementById("btn-pull10").disabled = state.gems < 900;
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
+  document.getElementById(id).style.display = "block";
+  if (id === 'collection') updateCollectionUI();
+  if (id !== 'gacha') document.getElementById("btn-reveal").style.display = "none";
+}
+
+function startGame() {
+  document.getElementById("main-nav").style.display = "flex";
+  showScreen("home");
+}
+
+function pull(amount) {
+  const cost = amount === 10 ? 900 : 100;
+  if (state.gems < cost) return;
+
+  state.gems -= cost;
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML = "";
+  document.getElementById("btn-reveal").style.display = "inline-block";
+
+  for (let i = 0; i < amount; i++) {
+    const heroData = rollHero();
+    // Im Gacha: Karten sind klickbar und verdeckt
+    const card = createCard(heroData, true); 
+    resultsDiv.appendChild(card);
+  }
+
+  saveGame();
+  updateUI();
+}
+
+function rollHero() {
+  state.pity++;
+  let rarity = "R";
+  const rand = Math.random();
+  if (state.pity >= 50 || rand < 0.05) { rarity = "SSR"; state.pity = 0; }
+  else if (rand < 0.25) rarity = "SR";
+
+  const pool = HERO_POOL.filter(h => h.rarity === rarity);
+  const baseHero = pool[Math.floor(Math.random() * pool.length)];
+  
+  if (!state.inventory[baseHero.name]) {
+    state.inventory[baseHero.name] = { ...baseHero, rank: 0, level: 1 };
+  } else {
+    let h = state.inventory[baseHero.name];
+    if (h.rank < RANKS.length - 1) h.rank++; else h.level++;
+  }
+  return state.inventory[baseHero.name];
+}
+
+function createCard(hero, isGacha) {
+  const card = document.createElement("div");
+  card.className = `card ${hero.rarity}`;
+  if (isGacha) card.classList.add("clickable");
+  
+  const power = Math.floor(hero.basePower * (1 + hero.rank * 0.25));
+
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="card-front"></div>
+      <div class="card-back">
+        <div class="avatar-circle"></div>
+        <div style="font-weight:bold">${hero.name}</div>
+        <div class="rarity-label">${hero.rarity}</div>
+        <div style="font-size: 12px; margin-top:8px;">
+          Rank: ${RANKS[hero.rank]} | LVL: ${hero.level}<br>
+          <strong style="color:var(--primary)">ATK: ${power}</strong>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (isGacha) {
+    card.onclick = () => card.classList.toggle("flipped");
+  } else {
+    // In der Collection: Sofort umgedreht und nicht klickbar
+    card.classList.add("flipped");
+  }
+
+  return card;
+}
+
+function revealAll() {
+  document.querySelectorAll("#results .card").forEach((card, index) => {
+    setTimeout(() => card.classList.add("flipped"), index * 100);
+  });
+  document.getElementById("btn-reveal").style.display = "none";
+}
+
+function updateCollectionUI() {
+  const list = document.getElementById("heroList");
+  list.innerHTML = "";
+  Object.values(state.inventory)
+    .sort((a, b) => b.basePower - a.basePower)
+    .forEach(hero => list.appendChild(createCard(hero, false)));
+}
+
+function resetGame() {
+  if(confirm("Löschen?")) { localStorage.clear(); location.reload(); }
+}
+
+loadGame();
+</script>
+</body>
+</html>
